@@ -19,7 +19,9 @@ class App extends Component {
   // See form lesson for details.
   // Enter your code below:
   handleNameChange = (event) => {
+    this.setState({
       value: event.target.value
+    });
   }
 
 
@@ -36,6 +38,7 @@ class App extends Component {
       value: ''
     });
   }
+
 
   // LIFECYCLE
   // Which lifecycle is best for fetching data?
@@ -80,16 +83,16 @@ class App extends Component {
             <h2 className="card-title">What is your name, pilot?</h2>
             <form onSubmit={this.handleSubmit}>
               <div className="form-group">
-                <input className="form-control col-md-4 offset-md-4" id="pilotName" onChange={this.handleNameChange} name="name" type="text" value={this.state.value} placeholder="Enter your name"/>
+                <input className="form-control col-md-4 offset-md-4" id="pilotName"  name="name" type="text"  onChange={this.handleNameChange} value={this.state.value} placeholder="Enter your name"/>
               </div>
                 <button type="submit" className="btn btn-primary">Submit</button>
             </form>
-            <h3>{this.state.pilot}</h3>
+            <h4>{this.state.pilot}</h4>
           </div>
           </div>
 
-         {this.state.vehicles.map((vehicle) =>
-           <div key={vehicle.url} {...vehicle} className = "col-md-4">
+         {this.state.vehicles.map(vehicle =>
+           <div key={vehicle.url} className = "col-md-4">
              <div className="card">
               <div className="card-block">
                  <h3 className="card-title">Vehicle: {vehicle.name}</h3>
