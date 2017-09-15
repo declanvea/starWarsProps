@@ -1,33 +1,25 @@
 import React, {Component} from 'react';
 import '../styles/App.css';
+import {Jumbotron, Form, FormGroup, FormControl, Input, FormText, Card, CardBlock, CardTitle, CardText, CardSubtitle} from 'reactstrap';
 
 class App extends Component {
   // PROPS AND STATE
   // Set props and state below.
   // You should set state for vehicles (empty array), value (empty string), pilot (empty) string.
   // Enter your code below:
-  constructor(props){
-    super(props);
-      this.state = {
+      state = {
         vehicles: [],
-        value: "",
-        pilot: [],
-        starWars: {}
-      };
-
-    this.handleNameChange = this.handleNameChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-  }
+        value: '',
+        pilot: ''
+      }
 
 
   // FORM: HANDLE INPUT CHANGES
   // handleNameChange below:
   // See form lesson for details.
   // Enter your code below:
-  handleNameChange(event){
-    this.setState({
-      pilot: event.target.value
-    });
+  handleNameChange = (event) => {
+      value: event.target.value
   }
 
 
@@ -37,20 +29,12 @@ class App extends Component {
   // Once the form is sumbited, two things need to happen: set the state of pilot to the input value.
   // Then, set the value of the input back to an empty string.
   // Enter your code below:
-  handleSubmit(event){
+  handleSubmit = (event) => {
     event.preventDefault();
-    const newPilot = {
-      pilot: this.state.pilot
-    }
-    const pilots = this.state.pilots;
-    pilots.push(newPilot);
-
-    this.state = {
-      pilots: pilots,
-      vehicles: [],
-      value: "",
-      pilot: ""
-    };
+    this.setState({
+      pilot: this.state.value,
+      value: ''
+    });
   }
 
   // LIFECYCLE
@@ -60,14 +44,12 @@ class App extends Component {
   // In your response look for 'results'. It should return this array.
   // You will want to use this array when you set the state of 'vehicles'. You will need this data in your render.
   // Enter your code below:
-  componentWillMount(){
+  componentDidMount(){
     fetch('https://swapi.co/api/vehicles/')
     .then(r => r.json())
-    .then((json => {
-      console.log('fetching data', json);
-      this.setState({starWars: json})
-    }))
-  }
+    .then(({results}) =>
+      this.setState({vehicles: results}));
+    }
 
   // RENDER
   // Before you can map over the data you've fetched, you will first need to store that 'state' in a variable.
@@ -82,38 +64,54 @@ class App extends Component {
     Store vehicles state in a variable.
     Map over this variable to access the values needed to render.
     */
-    let starWars = this.state.starWars;
 
     return (
         <div className="App">
-          {/*
-          The App component needs the following:
-           jumbotron section, form section, vehicle cards section.
-           Your form will also need a header in which you will pass the state of the form upon submit.
-           */}
-          <form onSubmit={this.handleSubmit}>
-              <div className="form">
-                <input className="form" name="pilot"  type="text" onChange={this.handleNameChange} value={this.state.pilot}/>
-              </div>
-              <div className="form">
-                <input type="submit" value="Submit"/>
-              </div>
-          </form>
-            <div className="body">
-              <div className="body">
-                  <h4 className="body">{starWars.name}</h4>
-                  <p className="body">{starWars.model}</p>
-                  <p className="body">{starWars.manufacturer}</p>
-                  <p className="body">{starWars.vehicle_class}</p>
-                  <p className="body">{starWars.passengers}</p>
-                  <p className="body">{starWars.crew}</p>
-                  <p className="body">{starWars.length}</p>
-                  <p className="body">{starWars.max_atmosphering_speed}</p>
-                  <p className="body">{starWars.cargo_capacity}</p>
-                  <a href="#" className="body">{starWars.url}</a>
-              </div>
-            </div>
+          <div>
+           <Jumbotron>
+             <h1 className="display-3">Star Wars</h1>
+             <hr className="my-2" />
+             <p>These are the vehicles in Star Wars.</p>
+           </Jumbotron>
+         </div>
 
+         <div className="card form">
+          <div className="card-block">
+            <h2 className="card-title">What is your name, pilot?</h2>
+            <form onSubmit={this.handleSubmit}>
+              <div className="form-group">
+                <input className="form-control col-md-4 offset-md-4" id="pilotName" onChange={this.handleNameChange} name="name" type="text" value={this.state.value} placeholder="Enter your name"/>
+              </div>
+                <button type="submit" className="btn btn-primary">Submit</button>
+            </form>
+            <h3>{this.state.pilot}</h3>
+          </div>
+          </div>
+
+         {this.state.vehicles.map((vehicle) =>
+           <div key={vehicle.url} {...vehicle} className = "col-md-4">
+             <div className="card">
+              <div className="card-block">
+                 <h3 className="card-title">Vehicle: {vehicle.name}</h3>
+                 <p className="card-subtitle mb-2 text-muted">Model: {vehicle.model}</p>
+              <div className="card">
+                <div className="card-block">
+                  <p className="card-subtitle mb-2 text-muted">Specs</p>
+                  <ul className="list-group list-group-flush">
+                    <li className="list-group-item">Manufacturer: {vehicle.manufacturer}</li>
+                    <li className="list-group-item">Class: {vehicle.vehicle_class}</li>
+                    <li className="list-group-item">Passengers: {vehicle.passengers}</li>
+                    <li className="list-group-item">Crew: {vehicle.crew}</li>
+                    <li className="list-group-item">Length: {vehicle.length}</li>
+                    <li className="list-group-item">Max Speed: {vehicle.max_atmosphering_speed}</li>
+                    <li className="list-group-item">Cargo Capacity: {vehicle.cargo_capacity}</li>
+                 </ul>
+                </div>
+               </div>
+              </div>
+             </div>
+           < /div>
+         )}
       </div>
 
     );
